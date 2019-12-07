@@ -28,19 +28,10 @@ namespace CleanCode
                 "Your gender is: ");
             var input = Console.ReadLine();
             Genders? gender;
-
-            switch (input)
+            var person = new Person
             {
-                case "F":
-                    gender = Genders.F;
-                    break;
-                case "M":
-                    gender = Genders.M;
-                    break;
-                default:
-                    gender = null;
-                    break;
-            }
+                Gender = input
+            };
 
             int age = DateTime.Today.Year - birthdate.Year;
 
