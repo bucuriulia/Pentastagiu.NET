@@ -4,53 +4,82 @@ namespace CleanCode
 {
     class Program
     {
-        static void Main(string[] args)
+        private static DateTime GetBirthdateComponents()
         {
-
-
             Console.Write("Enter the day of your birth: ");
-            var day = Convert.ToInt16(Console.ReadLine());
-
+            int.TryParse(Console.ReadLine(), out int day);
 
             Console.Write("Enter the month of your birth: ");
-            var month = Convert.ToInt16(Console.ReadLine());
-
+            int.TryParse(Console.ReadLine(), out int month);
 
             Console.Write("Enter the year of your birth: ");
-            var year = Convert.ToInt16(Console.ReadLine());
+            int.TryParse(Console.ReadLine(), out int year);
 
-            var birthdate = new DateTime(year, month, day); //.ToString("dd-MM-yyyy");
-            Console.WriteLine(birthdate);
+            return day != 0 && month != 0 && year != 0 ? new DateTime(year, month, day) : default;
+        }
 
+        private static Genders? GetGender()
+        {
             Console.Write("What is your gender? \n" +
-                "REMEMBER! You must enter either 'M' or 'F'. \n" +
-                " Any other input won't be accepted. \n" +
-                "Your gender is: ");
+                            "REMEMBER! You must enter either 'M' or 'F'. \n" +
+                            " Any other input won't be accepted. \n" +
+                            "Your gender is: ");
             var input = Console.ReadLine();
+
             Genders? gender;
-            var person = new Person
+
+            if (input.Equals("F") || input.Equals("f"))
+                gender = Genders.F;
+            else
             {
-                Gender = input
-            };
+                if (input.Equals("M") || input.Equals("m"))
+                    gender = Genders.M;
+                else
+                    gender = null;
+            }
 
-            int age = DateTime.Today.Year - birthdate.Year;
+            return gender;
+        }
 
-            if(gender == null)
+        static void Main(string[] args)
+        {
+            var birthdate = GetBirthdateComponents();
+            if (birthdate == default)
+            {
+                Console.WriteLine("Incorrect data. Program has been stopped. Press any key to exit");
+                Console.ReadKey();
+                return;
+            }
+
+            var gender = GetGender();
+            var age = DateTime.Today.Year - birthdate.Year;
+            const int femaleRetireAge = 63;
+            const int maleRetireAge = 65;
+            if (gender == null)
             {
                 Console.WriteLine("Told you to enter a valid input");
             }
             else
             {
-                if(gender == Genders.F)
+                if (gender == Genders.F && age < femaleRetireAge)
                 {
                     Console.WriteLine($"Your age is: {age}");
-                    Console.WriteLine($"You'll retire at the age of 63. That means {63-age} years from now");
+                    Console.WriteLine($"You'll retire at the age of {femaleRetireAge}. That means {femaleRetireAge - age} years from now");
+                    Console.ReadKey();
+                    return;
                 }
-                if (gender == Genders.M)
+
+                if (gender == Genders.M && age < maleRetireAge)
                 {
                     Console.WriteLine($"Your age is: {age}");
-                    Console.WriteLine($"You'll retire at the age of 65. That means {65 - age} years from now");
+                    Console.WriteLine($"You'll retire at the age of {maleRetireAge}. That means {maleRetireAge - age} years from now");
+                    Console.ReadKey();
+                    return;
                 }
+
+                Console.WriteLine("You are already retired");
+
+
             }
 
             Console.ReadKey();
